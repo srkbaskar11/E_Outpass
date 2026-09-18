@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warden Dashboard | Outpass Portal</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="#" class="navbar-brand">
+      <span class="logo">🏫</span> Outpass Portal
+    </a>
+    <div class="navbar-menu">
+      <div class="user-info">
+        <span id="user-name">Warden</span>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-logout">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 30px;">
+    
+    <div class="glass-card stats-card" style="margin-bottom: var(--space-xl);">
+      <div class="stats-icon">⏳</div>
+      <div class="stats-info">
+        <h3 id="pending-count">0</h3>
+        <p>Pending Requests in Queue</p>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" id="tab-btn-pending" onclick="switchTab('pending')">Pending Requests</button>
+        <button class="tab-btn" id="tab-btn-history" onclick="switchTab('history')">Recent History</button>
+      </div>
+
+      <!-- Pending Tab -->
+      <div id="tab-pending" class="tab-content active">
+        <div class="dashboard-header" style="margin-top: 0;">
+          <h3>Action Required</h3>
+          <button class="btn btn-outline btn-sm" id="btn-refresh-pending" onclick="loadPendingRequests()">↻ Refresh</button>
+        </div>
+        
+        <div class="table-container" id="pending-table-container">
+          <!-- Table populated by JS -->
+        </div>
+      </div>
+
+      <!-- History Tab -->
+      <div id="tab-history" class="tab-content">
+        <div class="dashboard-header" style="margin-top: 0;">
+          <h3>Recently Processed</h3>
+        </div>
+        
+        <div class="table-container" id="history-table-container">
+          <!-- Table populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Modal -->
+  <div class="modal-overlay" id="action-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="action-modal-title">Confirm Action</h3>
+        <button class="modal-close" onclick="closeModal('action-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="action-modal-prompt">Are you sure?</p>
+        
+        <div class="form-group mt-3">
+          <label for="action-remarks">Remarks (Optional)</label>
+          <textarea id="action-remarks" class="form-control" placeholder="Add any comments or reasons here..."></textarea>
+        </div>
+        
+        <input type="hidden" id="action-req-id">
+        <input type="hidden" id="action-type">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('action-modal')">Cancel</button>
+        <button class="btn" id="btn-confirm-action" onclick="confirmAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/warden.js"></script>
+</body>
+</html>

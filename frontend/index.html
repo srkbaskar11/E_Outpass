@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Outpass Portal | Login & Register</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .auth-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    .auth-tab-btn.active {
+      background: var(--primary-color);
+      color: var(--text-primary);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .auth-form {
+      display: none;
+    }
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="login-page">
+  <div class="particles" id="particles"></div>
+  
+  <div class="login-card glass-card" style="max-width: 440px; width: 100%;">
+    <div class="logo">🏫</div>
+    <h2>Outpass Portal</h2>
+    <p>Hostel Outpass Management System</p>
+    
+    <!-- Tab Switcher -->
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" onclick="switchAuthTab('login')">Login</button>
+      <button class="auth-tab-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <div id="error-message" class="text-danger" style="display: none; margin-bottom: 15px; font-weight: 500;"></div>
+    <div id="success-message" class="text-success" style="display: none; margin-bottom: 15px; font-weight: 500; color: var(--success-color);"></div>
+
+    <!-- Login Form -->
+    <form id="login-form" class="auth-form active">
+      <div class="form-group">
+        <label for="roll_no">Roll Number / User ID</label>
+        <input type="text" id="roll_no" class="form-control" placeholder="e.g. S001" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+      </div>
+      
+      <button type="submit" id="login-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+        <span>Login to Portal</span>
+      </button>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signup-form" class="auth-form">
+      <div class="form-group">
+        <label for="reg_name">Full Name</label>
+        <input type="text" id="reg_name" class="form-control" placeholder="e.g. John Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="reg_roll_no">Roll Number / User ID</label>
+        <input type="text" id="reg_roll_no" class="form-control" placeholder="e.g. S102" required>
+      </div>
+
+      <div class="form-group">
+        <label for="reg_email">Email Address</label>
+        <input type="email" id="reg_email" class="form-control" placeholder="e.g. john@college.edu" required>
+      </div>
+
+      <div class="form-group">
+        <label for="reg_phone">Phone Number (Optional)</label>
+        <input type="tel" id="reg_phone" class="form-control" placeholder="e.g. 9876543210">
+      </div>
+
+      <div class="form-group">
+        <label for="reg_role">Register As</label>
+        <select id="reg_role" class="form-control" style="background: rgba(0,0,0,0.3); color: white;">
+          <option value="student" selected>Student</option>
+          <option value="warden">Warden</option>
+          <option value="gate">Gate Staff</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="reg_password">Password</label>
+        <input type="password" id="reg_password" class="form-control" placeholder="Create a password" required>
+      </div>
+
+      <button type="submit" id="signup-btn" class="btn btn-success" style="width: 100%; margin-top: 10px;">
+        <span>Create Account</span>
+      </button>
+    </form>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Create background particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const size = Math.random() * 50 + 10 + 'px';
+      particle.style.width = size;
+      particle.style.height = size;
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.top = Math.random() * 100 + 'vh';
+      particle.style.animationDuration = Math.random() * 10 + 5 + 's';
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      particlesContainer.appendChild(particle);
+    }
+
+    // Check if already logged in
+    const user = Auth.getUser();
+    if (user && Auth.getToken()) {
+      redirectUser(user.role);
+    }
+
+    function redirectUser(role) {
+      if (role === 'student') window.location.href = 'student/index.html';
+      else if (role === 'warden') window.location.href = 'warden/index.html';
+      else if (role === 'gate') window.location.href = 'gate/index.html';
+    }
+
+    // Tab Switcher
+    function switchAuthTab(tab) {
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+      if (tab === 'login') {
+        document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
+        document.getElementById('login-form').classList.add('active');
+      } else {
+        document.querySelectorAll('.auth-tab-btn')[1].classList.add('active');
+        document.getElementById('signup-form').classList.add('active');
+      }
+    }
+
+    // Login Form Submit
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const roll_no = document.getElementById('roll_no').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('login-btn');
+      const errorDiv = document.getElementById('error-message');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<div class="loading-spinner"></div> Logging in...';
+      errorDiv.style.display = 'none';
+      
+      try {
+        const response = await API.login(roll_no, password);
+        Auth.setSession(response.access_token, response.user);
+        
+        showToast('Login successful! Redirecting...', 'success');
+        
+        setTimeout(() => {
+          redirectUser(response.user.role);
+        }, 800);
+      } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<span>Login to Portal</span>';
+      }
+    });
+
+    // Sign Up Form Submit
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg_name').value.trim();
+      const roll_no = document.getElementById('reg_roll_no').value.trim();
+      const email = document.getElementById('reg_email').value.trim();
+      const phone = document.getElementById('reg_phone').value.trim();
+      const role = document.getElementById('reg_role').value;
+      const password = document.getElementById('reg_password').value;
+
+      const btn = document.getElementById('signup-btn');
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<div class="loading-spinner"></div> Creating Account...';
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      try {
+        const response = await API.register({ name, roll_no, email, phone, role, password });
+        Auth.setSession(response.access_token, response.user);
+        
+        showToast('Account created successfully! Redirecting...', 'success');
+        
+        setTimeout(() => {
+          redirectUser(response.user.role);
+        }, 800);
+      } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<span>Create Account</span>';
+      }
+    });
+    
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+        <span class="toast-message">${message}</span>
+        <button class="toast-close">&times;</button>
+      `;
+      container.appendChild(toast);
+      
+      toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+      });
+      
+      setTimeout(() => {
+        if(document.body.contains(toast)) {
+          toast.classList.add('fade-out');
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

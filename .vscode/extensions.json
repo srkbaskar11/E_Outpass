@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.autopep8",
+    "ms-python.pylint",
+    "ritwickdey.liveserver",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+    "ckolkman.vscode-postgres",
+    "humao.rest-client",
+    "pkief.material-icon-theme",
+    "oderwat.indent-rainbow",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

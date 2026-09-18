@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: FastAPI (uvicorn)",
+      "type": "python",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--port", "8000"],
+      "cwd": "${workspaceFolder}/backend",
+      "python": "${workspaceFolder}/backend/venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/backend"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Backend: Seed Database",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/setup_db.py",
+      "cwd": "${workspaceFolder}/backend",
+      "python": "${workspaceFolder}/backend/venv/Scripts/python.exe",
+      "console": "integratedTerminal"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | Outpass Portal</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="#" class="navbar-brand">
+      <span class="logo">🏫</span> Outpass Portal
+    </a>
+    <div class="navbar-menu">
+      <div class="user-info">
+        <span id="user-name">Student Name</span>
+      </div>
+      <div class="notification-bell" id="btn-notifications" onclick="switchTab('notifications')">
+        🔔
+        <span class="notification-badge" id="notif-badge" style="display: none;">0</span>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-logout">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 30px;">
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" id="tab-btn-new" onclick="switchTab('new')">New Request</button>
+        <button class="tab-btn" id="tab-btn-my" onclick="switchTab('my')">My Requests</button>
+        <button class="tab-btn" id="tab-btn-notifications" onclick="switchTab('notifications')">Notifications</button>
+      </div>
+
+      <!-- New Request Tab -->
+      <div id="tab-new" class="tab-content active">
+        <div class="glass-card">
+          <h3>Create Outpass Request</h3>
+          <p class="text-muted">Fill out the details below to apply for a hostel outpass.</p>
+          
+          <form id="new-request-form">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="destination">Destination</label>
+                <input type="text" id="destination" class="form-control" required placeholder="Where are you going?">
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="contact_details">Contact Details (Mobile No.)</label>
+                <input type="text" id="contact_details" class="form-control" required placeholder="Enter active phone number">
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="departure_time">Departure Date & Time</label>
+                <input type="datetime-local" id="departure_time" class="form-control" required>
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="return_time">Return Date & Time</label>
+                <input type="datetime-local" id="return_time" class="form-control" required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="reason">Reason for Leave</label>
+              <textarea id="reason" class="form-control" required placeholder="Please provide a valid reason for your leave..."></textarea>
+            </div>
+            
+            <div style="text-align: right; margin-top: 20px;">
+              <button type="submit" id="btn-submit-request" class="btn btn-primary">Submit Request</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- My Requests Tab -->
+      <div id="tab-my" class="tab-content">
+        <div class="dashboard-header" style="margin-top: 0;">
+          <h3>My Outpass Requests</h3>
+          <button class="btn btn-outline btn-sm" id="btn-refresh-my" onclick="loadMyRequests()">↻ Refresh</button>
+        </div>
+        
+        <div class="table-container" id="requests-table-container">
+          <!-- Table populated by JS -->
+        </div>
+      </div>
+
+      <!-- Notifications Tab -->
+      <div id="tab-notifications" class="tab-content">
+        <div class="dashboard-header" style="margin-top: 0;">
+          <h3>Notifications</h3>
+          <button class="btn btn-outline btn-sm" id="btn-mark-all-read" onclick="markAllRead()">Mark All Read</button>
+        </div>
+        
+        <div class="glass-card" style="padding: 0; overflow: hidden;" id="notifications-container">
+          <!-- List populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Details Modal -->
+  <div class="modal-overlay" id="request-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Request Details <span id="modal-req-id"></span></h3>
+        <button class="modal-close" onclick="closeModal('request-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-req-body">
+        <!-- Content populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/student.js"></script>
+</body>
+</html>

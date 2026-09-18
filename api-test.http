@@ -1,0 +1,178 @@
+### Outpass Management API — REST Client Test File
+### Install "REST Client" extension in VS Code, then click "Send Request" above each block
+
+@baseUrl = http://localhost:8000
+@studentToken = REPLACE_WITH_TOKEN_AFTER_LOGIN
+@wardenToken = REPLACE_WITH_TOKEN_AFTER_LOGIN
+@gateToken = REPLACE_WITH_TOKEN_AFTER_LOGIN
+
+### ─────────────────────────────────────────
+### 1. HEALTH CHECK
+### ─────────────────────────────────────────
+
+GET {{baseUrl}}/
+Content-Type: application/json
+
+###
+
+### ─────────────────────────────────────────
+### 2. AUTH — Login as Student (Alice)
+### ─────────────────────────────────────────
+
+# @name studentLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "roll_no": "S001",
+  "password": "password123"
+}
+
+###
+
+### Login as Warden
+# @name wardenLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "roll_no": "W001",
+  "password": "password123"
+}
+
+###
+
+### Login as Gate Staff
+# @name gateLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "roll_no": "G001",
+  "password": "password123"
+}
+
+###
+
+### Get current user info
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{studentToken}}
+
+###
+
+### ─────────────────────────────────────────
+### 3. OUTPASS — Submit New Request (Student)
+### ─────────────────────────────────────────
+
+POST {{baseUrl}}/api/outpass/
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "destination": "Home Town",
+  "reason": "Festival Vacation",
+  "departure_time": "2026-09-25T08:00:00",
+  "return_time": "2026-09-27T20:00:00",
+  "contact_details": "9876543210"
+}
+
+###
+
+### Get My Requests (Student)
+GET {{baseUrl}}/api/outpass/my
+Authorization: Bearer {{studentToken}}
+
+###
+
+### Get Pending Queue (Warden)
+GET {{baseUrl}}/api/outpass/pending
+Authorization: Bearer {{wardenToken}}
+
+###
+
+### Get Warden History (Approved/Rejected)
+GET {{baseUrl}}/api/outpass/history
+Authorization: Bearer {{wardenToken}}
+
+###
+
+### Get Single Request Detail
+GET {{baseUrl}}/api/outpass/1
+Authorization: Bearer {{studentToken}}
+
+###
+
+### ─────────────────────────────────────────
+### 4. APPROVAL — Warden Actions
+### ─────────────────────────────────────────
+
+### Approve Request #3 (Charlie's pending request)
+POST {{baseUrl}}/api/outpass/3/approve
+Authorization: Bearer {{wardenToken}}
+Content-Type: application/json
+
+{
+  "remarks": "Approved for medical visit"
+}
+
+###
+
+### Reject a Request
+POST {{baseUrl}}/api/outpass/3/reject
+Authorization: Bearer {{wardenToken}}
+Content-Type: application/json
+
+{
+  "remarks": "Exams are coming up"
+}
+
+###
+
+### ─────────────────────────────────────────
+### 5. NOTIFICATIONS
+### ─────────────────────────────────────────
+
+### Get All Notifications (Student)
+GET {{baseUrl}}/api/notifications/
+Authorization: Bearer {{studentToken}}
+
+###
+
+### Mark One Notification as Read
+POST {{baseUrl}}/api/notifications/read/1
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{}
+
+###
+
+### Mark All Read
+POST {{baseUrl}}/api/notifications/read-all
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{}
+
+###
+
+### ─────────────────────────────────────────
+### 6. QR CODE
+### ─────────────────────────────────────────
+
+### Generate QR for Alice's approved request (#1)
+GET {{baseUrl}}/api/qr/generate/1
+Authorization: Bearer {{studentToken}}
+
+###
+
+### Validate QR Token (Gate Staff)
+POST {{baseUrl}}/api/qr/validate
+Authorization: Bearer {{gateToken}}
+Content-Type: application/json
+
+{
+  "token": "TEST-QR-ALICE-001"
+}
+
+###

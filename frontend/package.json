@@ -1,0 +1,10 @@
+{
+  "name": "hostel-outpass-frontend",
+  "version": "1.0.0",
+  "description": "Hostel Outpass System Frontend",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
+  }
+}
